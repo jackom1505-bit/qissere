@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Cursor from "./components/Cursor";
@@ -18,7 +20,6 @@ export default function App() {
   const [secret, setSecret] = useState<SecretContent | null>(null);
 
   const openBeanSecret = useCallback(() => setSecret(SECRETS.bean), []);
-
   return (
     <div className="min-h-screen bg-ink-950">
       <Cursor />

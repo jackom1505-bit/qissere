@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Phone, Mail, BookOpen, Camera, Bean } from "lucide-react";
 import { useScrollReveal } from "../hooks/useScrollReveal";
@@ -14,6 +15,9 @@ const icons: Record<string, typeof Phone> = {
 
 export default function SecretsSection({ onSecret }: { onSecret: (s: SecretContent) => void }) {
   const [ref, isVisible] = useScrollReveal<HTMLDivElement>();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <section id="secrets" ref={ref} className="relative py-28 sm:py-40 bg-ink-950/55 grain overflow-hidden">
@@ -39,7 +43,7 @@ export default function SecretsSection({ onSecret }: { onSecret: (s: SecretConte
         >
           {SECRET_ITEMS.map((item) => {
             const Icon = icons[item.id];
-            const unlocked = isSecretUnlocked(item.id);
+            const unlocked = mounted && isSecretUnlocked(item.id);
             return (
               <button
                 key={item.id}

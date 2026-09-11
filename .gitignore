@@ -22,6 +22,9 @@ node_modules/
 # Production build outputs
 dist/
 dist-ssr/
+.next/
+out/
+*.tsbuildinfo
 *.local
 
 # Environment variables

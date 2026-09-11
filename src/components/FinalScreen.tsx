@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Feather } from "lucide-react";
 import { useScrollReveal } from "../hooks/useScrollReveal";
@@ -9,8 +9,13 @@ import { getChapterOneCount, hasJoinedChapterOne, joinChapterOne } from "../util
 export default function FinalScreen() {
   const [ref, isVisible] = useScrollReveal<HTMLDivElement>({ threshold: 0.2 });
   const [email, setEmail] = useState("");
-  const [joined, setJoined] = useState(hasJoinedChapterOne());
-  const [count, setCount] = useState(getChapterOneCount());
+  const [joined, setJoined] = useState(false);
+  const [count, setCount] = useState(1268);
+
+  useEffect(() => {
+    setJoined(hasJoinedChapterOne());
+    setCount(getChapterOneCount());
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +88,7 @@ export default function FinalScreen() {
               >
                 <p className="font-serif italic text-xl sm:text-2xl text-cream-50">You're in Chapter One.</p>
                 <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-brass-400 mt-3">
-                  Customer Nº {count.toLocaleString()}
+                  Customer Nº {count.toLocaleString("en-US")}
                 </p>
                 <p className="text-cream-200/50 text-sm mt-4">
                   We'll write when the city is chosen. Until then — follow the roast on Instagram.
@@ -112,7 +117,7 @@ export default function FinalScreen() {
             )}
           </div>
           <p className="font-mono text-[10px] tracking-[0.25em] uppercase text-cream-200/30 mt-5">
-            {count.toLocaleString()} people are already waiting for the story
+            {count.toLocaleString("en-US")} people are already waiting for the story
           </p>
         </motion.div>
 
