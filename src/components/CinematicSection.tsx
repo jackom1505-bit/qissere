@@ -125,7 +125,7 @@ export default function CinematicSection({ onSecret }: { onSecret: () => void })
         <Beat progress={scrollYProgress} from={0.3} to={0.38} align="left">
           <Kick>Chapter 01</Kick>
           <Line>
-            Q <span className="italic gradient-text-copper">— Qissa.</span>
+            Q <span className="font-qissa italic gradient-text-copper">— Qissa.</span>
           </Line>
           <p className="font-body text-cream-200/60 text-sm sm:text-base mt-4">
             Every beginning needs a story. Ours starts in a drum, not a doorway.

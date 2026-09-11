@@ -5,6 +5,7 @@
 @theme {
   --font-display: "Clash Display", "Cabinet Grotesk", sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
+  --font-qissa: "Cormorant Garamond", Georgia, serif;
   --font-body: "Cabinet Grotesk", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
@@ -53,6 +54,10 @@ body {
   color: var(--color-cream-50);
   background: var(--color-ink-950);
   overflow-x: hidden;
+}
+
+.font-qissa {
+  font-family: var(--font-qissa), "Cormorant Garamond", Georgia, serif;
 }
 
 /* ── Custom Cursor ── */

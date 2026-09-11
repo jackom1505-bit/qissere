@@ -153,7 +153,7 @@ function Drum({ drumRef }: { drumRef: MutableRefObject<THREE.Group | null> }) {
       {/* back plate */}
       <mesh position={[-DRUM_L / 2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[DRUM_R, DRUM_R, 0.08, 48]} />
-        <meshStandardMaterial color="#22181298" metalness={0.7} roughness={0.5} />
+        <meshStandardMaterial color="#221812" metalness={0.7} roughness={0.5} />
       </mesh>
       {/* internal vanes */}
       {[0, 1, 2, 3].map((i) => {

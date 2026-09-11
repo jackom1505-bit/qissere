@@ -69,7 +69,7 @@ export default function LettersSection() {
                 Chapter 01 · Now
               </span>
               <p className="font-serif text-xl sm:text-2xl text-cream-50 mt-1">
-                Q <span className="italic gradient-text-copper">— Qissa · story</span>
+                Q <span className="font-qissa italic gradient-text-copper">— Qissa · story</span>
               </p>
               <p className="text-cream-200/50 text-sm mt-1.5 max-w-md">
                 Every beginning needs one. This is the year the café learns to speak.

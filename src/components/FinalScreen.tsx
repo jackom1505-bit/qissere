@@ -4,25 +4,47 @@ import { ArrowRight, BookOpen, Feather } from "lucide-react";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import InstagramIcon from "./icons/InstagramIcon";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL, LOCATION } from "../data/seed";
-import { getChapterOneCount, hasJoinedChapterOne, joinChapterOne } from "../utils/storage";
 
 export default function FinalScreen() {
   const [ref, isVisible] = useScrollReveal<HTMLDivElement>({ threshold: 0.2 });
   const [email, setEmail] = useState("");
   const [joined, setJoined] = useState(false);
-  const [count, setCount] = useState(1268);
+  const [count, setCount] = useState<number | null>(null);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+  const [website, setWebsite] = useState("");
 
   useEffect(() => {
-    setJoined(hasJoinedChapterOne());
-    setCount(getChapterOneCount());
+    const controller = new AbortController();
+    fetch("/api/waitlist", { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) return;
+        const data = await response.json();
+        if (typeof data.count === "number") setCount(data.count);
+      }).catch(() => {});
+    return () => controller.abort();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    joinChapterOne();
-    setCount(getChapterOneCount());
-    setJoined(true);
+    if (pending) return;
+    setPending(true);
+    setError("");
+    try {
+      const response = await fetch("/api/waitlist", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, website }), signal: AbortSignal.timeout(15000),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || "We couldn’t save your email. Please try again.");
+      setJoined(true);
+      // A failed count refresh must never undo a successful signup.
+      fetch("/api/waitlist").then(async response => {
+        if (response.ok) { const result = await response.json(); if (typeof result.count === "number") setCount(result.count); }
+      }).catch(() => {});
+    } catch (err) {
+      setError(err instanceof Error && err.name !== "TimeoutError" && err.name !== "TypeError" ? err.message : "We couldn’t connect. Please try again.");
+    } finally { setPending(false); }
   };
 
   return (
@@ -86,18 +108,27 @@ export default function FinalScreen() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", damping: 16, stiffness: 200 }}
               >
-                <p className="font-serif italic text-xl sm:text-2xl text-cream-50">You're in Chapter One.</p>
+                <p role="status" className="font-serif italic text-xl sm:text-2xl text-cream-50">You're in Chapter One.</p>
                 <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-brass-400 mt-3">
-                  Customer Nº {count.toLocaleString("en-US")}
+                  Your email is on the list
                 </p>
                 <p className="text-cream-200/50 text-sm mt-4">
                   We'll write when the city is chosen. Until then — follow the roast on Instagram.
                 </p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3" aria-busy={pending}>
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="waitlist-website">Website</label>
+                  <input id="waitlist-website" name="website" value={website} onChange={e => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" />
+                </div>
                 <input
                   type="email"
+                  name="email"
+                  autoComplete="email"
+                  maxLength={254}
+                  disabled={pending}
+                  aria-describedby={error ? "waitlist-error" : undefined}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
@@ -107,17 +138,19 @@ export default function FinalScreen() {
                 />
                 <button
                   type="submit"
+                  disabled={pending}
                   data-cursor="join"
-                  className="btn-brass px-7 py-3.5 rounded-sm font-mono text-[11px] tracking-[0.25em] uppercase inline-flex items-center justify-center gap-2"
+                  className="btn-brass disabled:opacity-50 disabled:cursor-wait px-7 py-3.5 rounded-sm font-mono text-[11px] tracking-[0.25em] uppercase inline-flex items-center justify-center gap-2"
                 >
-                  Join Chapter One
+                  {pending ? "Joining…" : "Join Chapter One"}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </form>
             )}
+            {error && <p id="waitlist-error" role="alert" className="mt-4 text-sm text-ember-300">{error}</p>}
           </div>
-          <p className="font-mono text-[10px] tracking-[0.25em] uppercase text-cream-200/30 mt-5">
-            {count.toLocaleString("en-US")} people are already waiting for the story
+          <p aria-live="polite" className="font-mono text-[10px] tracking-[0.25em] uppercase text-cream-200/30 mt-5">
+            {count === null ? "Join the first chapter of our story" : `${count.toLocaleString("en-US")} ${count === 1 ? "person is" : "people are"} waiting for the story`}
           </p>
         </motion.div>
 
