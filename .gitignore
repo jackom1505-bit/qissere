@@ -54,11 +54,10 @@ out/
 
 # macOS / OS files
 .DS_Store
-.AppleDouble
 .LSOverride
-Icon?
+Icon\r
+!src/components/icons/**
 ._*
-.Spotlight-V100
 .Trashes
 ehthumbs.db
 Thumbs.db
