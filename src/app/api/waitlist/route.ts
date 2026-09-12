@@ -9,7 +9,8 @@ const json = (body: unknown, status = 200) => Response.json(body, { status, head
 export async function GET() {
   try {
     return json({ count: await getSubscriberCount() });
-  } catch {
+  } catch (error) {
+    console.error("Waitlist count error:", error);
     return json({ error: "The waitlist is temporarily unavailable." }, 503);
   }
 }
@@ -45,7 +46,8 @@ export async function POST(request: Request) {
     await addSubscriber(email);
     // Identical response for new and existing emails avoids disclosing membership.
     return json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("Waitlist signup error:", error);
     return json({ error: "We couldn’t save your email. Please try again shortly." }, 503);
   }
 }
