@@ -104,6 +104,9 @@ export default function CinematicSection({ onSecret }: { onSecret: () => void })
           <p className="font-serif italic text-[clamp(1.1rem,2.6vw,1.8rem)] text-cream-200/85 mt-5">
             The Story That Never Stays Still.
           </p>
+          <p className="font-body text-sm sm:text-base text-cream-200/70 mt-4">
+            Qissare café · Coming to India in 2028.
+          </p>
           <div className="mt-12 flex items-center justify-center gap-3 text-cream-200/50">
             <span className="font-mono text-[10px] tracking-[0.35em] uppercase">Scroll to begin the roast</span>
             <span className="animate-scroll-hint inline-block font-mono">↓</span>

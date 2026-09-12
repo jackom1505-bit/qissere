@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "../index.css";
+import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "QISSARÉ — The Story That Never Stays Still",
-  description:
-    "QISSARÉ. The story that never stays still. A café roasting somewhere in India, opening 2028 — being written in public, one chapter at a time. Scroll to begin the roast.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  applicationName: "Qissare",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
